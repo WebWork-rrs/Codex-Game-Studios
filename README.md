@@ -65,7 +65,9 @@ Read AGENTS.md and use the studio-start workflow to help me build my first game.
 My idea: a small 2D game where the player collects coins and reaches an exit.
 Target platform: desktop.
 Use minimal rigor and guided automation. Help me choose an engine.
-Keep the first playable version small, using placeholder art.
+Keep the mechanics small. Use studio-playable-prototype to give it coherent
+artwork, appropriate animation, and gameplay feedback, using available image
+generation or licensed free assets. Ask before using paid asset services.
 ```
 
 Replace the idea and platform with your own. If you have no idea yet, say
@@ -117,6 +119,13 @@ The engine must be installed and runnable for gameplay verification. The starter
 has no engine preconfigured; engine installation and a successful game run are
 separate from validating the studio tools.
 
+For a prototype with artwork and presentation, use `$studio-playable-prototype`.
+It combines the Studio process with the included asset, animation, game-feel,
+and audio craft skills. A short brief is enough at minimal rigor. See
+[game assets and presentation](docs/game-assets.md) for a starter prompt,
+available generators, dependencies, and visual/audio verification. If you
+want a disposable greybox first, say so explicitly.
+
 ### 5. Continue in another session
 
 Open the same project and ask:
@@ -139,8 +148,12 @@ before moving or replacing existing game files.
 
 ## What's included
 
-- **74 Codex skills** covering ideation, design, architecture, implementation,
+- **75 Studio workflows** covering ideation, design, architecture, implementation,
   art/audio specifications, QA, production, and release preparation.
+- **6 game-craft skills** from
+  [awesome-gamedev-agent-skills](https://github.com/gamedev-skills/awesome-gamedev-agent-skills)
+  for actual asset production, game feel, and Godot animation, tilemaps, and audio.
+  Image-generation tools or licensed asset sources supply the media itself.
 - **49 specialist role definitions**, including designers, programmers,
   producers, artists, audio specialists, and QA leads. Roles inherit your
   Codex model settings and run as needed within your client's capabilities.
@@ -157,6 +170,7 @@ Browse [all studio workflows](docs/codex-workflows.md). Useful entry points:
 | --- | --- |
 | Find the next step | `$studio-help` |
 | Make a throwaway prototype | `$studio-prototype` |
+| Build a prototype with assets and feedback | `$studio-playable-prototype` |
 | Design a game system | `$studio-design-system` |
 | Plan a sprint | `$studio-sprint-plan` |
 | Review code | `$studio-code-review` |
@@ -168,13 +182,14 @@ Browse [all studio workflows](docs/codex-workflows.md). Useful entry points:
 ```text
 AGENTS.md                Codex project instructions
 project.yaml             Game settings and workflow preferences
-.agents/skills/          Codex studio workflows and supporting resources
+.agents/skills/          Codex studio and game-craft skills with resources
 .codex/                  Codex role definitions and hook configuration
 .claude/                 Original framework sources and shared helpers
 design/                  Game brief and design documents
 docs/                    Architecture, engine references, and studio guides
 production/              Stories, plans, QA evidence, and session checkpoints
 tools/codex/             Adapter, validation, and upstream integration tools
+third_party/             Pinned game-craft sources and their license notices
 ```
 
 Keep `.claude/`: shared helpers, templates, and documentation still depend on
@@ -229,6 +244,8 @@ python3 -m unittest discover -s tools/codex/tests -v
 
 Generated skills and roles should be changed through their sources. The
 converter refuses to overwrite customized generated files.
+The game-craft subset has its own upstream pin and reviewed update procedure;
+see [its provenance and maintenance](docs/game-assets.md#provenance-and-maintenance).
 
 ## Documentation and credits
 
@@ -237,6 +254,7 @@ converter refuses to overwrite customized generated files.
 - [Upstream synchronization](docs/upstream-sync.md)
 - [Adapter validation and known limits](docs/codex-validation.md)
 - [Implemented upstream fixes and evidence](docs/codex-fixes.md)
+- [Game assets, presentation, and optional generators](docs/game-assets.md)
 - [Original Claude Code Game Studios documentation](https://github.com/Donchitos/Claude-Code-Game-Studios#readme)
 - [Credits](CREDITS.md) · [MIT license](LICENSE)
 

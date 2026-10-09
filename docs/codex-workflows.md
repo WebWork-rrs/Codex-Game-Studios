@@ -37,6 +37,7 @@ Invoke a skill using `$studio-NAME` or ask for the workflow in plain language.
 | `$studio-onboard` | Onboarding doc for a new contributor or agent — project state, conventions, priorities relevant to the specified role. |
 | `$studio-patch-notes` | Player-facing patch notes from git history and changelogs. Translates developer language into player communication. |
 | `$studio-perf-profile` | Performance profiling — find bottlenecks, measure against budgets, produce ranked optimization recommendations. |
+| `$studio-playable-prototype` | Build or polish a small playable game with cohesive assets, animation, and gameplay feedback. Use for experiments that should look and feel like a game. |
 | `$studio-playtest-report` | Structured playtest report template, or turn existing playtest notes into structured feedback. |
 | `$studio-project-stage-detect` | Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in development?' |
 | `$studio-propagate-design-change` | A GDD changed — scan ADRs and the traceability index for now-stale architectural decisions. Impact report, guides resolution. |
@@ -78,3 +79,16 @@ Invoke a skill using `$studio-NAME` or ask for the workflow in plain language.
 | `$studio-ux-design` | Section-by-section UX spec authoring for a screen, flow or HUD. Reads the player journey to provide context; also project-wide accessibility. |
 | `$studio-ux-review` | Validate a UX spec, HUD design or pattern library — accessibility, GDD alignment, readiness. APPROVED / NOT ASSESSED / NEEDS REVISION / MAJOR REVISION NEEDED. |
 | `$studio-vertical-slice` | Pre-production validation — end-to-end build to confirm the full loop is achievable before committing to Production. After GDDs, architecture, UX specs. |
+
+## Game-craft skills
+
+Pinned native skills from awesome-gamedev-agent-skills; see [asset setup](game-assets.md).
+
+| Skill | Purpose |
+| --- | --- |
+| `$audio-design` | Design and mix gameplay sound and music. |
+| `$create-game-assets` | Produce, import, and verify cohesive game artwork. |
+| `$game-feel` | Add satisfying motion, particles, and gameplay feedback. |
+| `$godot-animation` | Implement sprite animation, animation states, and tweens. |
+| `$godot-audio` | Connect Godot audio players, buses, and effects. |
+| `$godot-tilemap` | Build Godot tile environments and terrain transitions. |

@@ -57,7 +57,9 @@ $studio-story-done <story path>
 ```
 
 `$studio-help` recommends your next step based on actual project state.
-[The workflow catalog](docs/codex-workflows.md) lists all 74 skills.
+[The workflow catalog](docs/codex-workflows.md) lists 75 Studio workflows and
+six native game-craft skills. See [game assets and presentation](docs/game-assets.md)
+for artwork, animation, feedback, and optional generators.
 Choose `guided` automation during onboarding for routine execution with
 consultation on major decisions. Rigor and automation are separate choices.
 Only needed roles run; 49 definitions do not mean 49 concurrent agents.
@@ -67,7 +69,8 @@ Only needed roles run; 49 definitions do not mean 49 concurrent agents.
 | Claude mechanism | Codex mechanism |
 | --- | --- |
 | `CLAUDE.md`, `@` imports | `AGENTS.md`, explicit reference reads |
-| 74 slash-command workflows | `.agents/skills/studio-*`, supported metadata |
+| 75 Studio workflows | `.agents/skills/studio-*`, supported metadata |
+| 6 game-craft skills | `.agents/skills/`, native portable skills with pinned sources and notices |
 | Skill-local resources | Converted copies alongside each Codex skill |
 | `!` preprocessing, `CLAUDE_SKILL_DIR` | Explicit shell blocks and repository paths |
 | 49 Markdown roles / Anthropic models | `.codex/agents/*.toml`, inherit Codex model |

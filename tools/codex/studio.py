@@ -163,9 +163,13 @@ def doctor(root: Path) -> int:
                 role = tomllib.loads(data.decode())
                 if not all(role.get(key) for key in ('name', 'description', 'developer_instructions')):
                     errors.append(f'Incomplete Codex role: {name}')
-        skills = sum(p.endswith('/SKILL.md') for p in artifacts)
+        skills = sum(p.startswith('.agents/skills/studio-') and p.endswith('/SKILL.md') for p in artifacts)
+        craft = sum(p.startswith('.agents/skills/') and not p.startswith('.agents/skills/studio-')
+                    and p.endswith('/SKILL.md') for p in artifacts)
         roles = sum(p.startswith('.codex/agents/') for p in artifacts)
         print(f'{skills} studio workflows and {roles} custom roles are synchronized.')
+        if craft:
+            print(f'{craft} pinned game-craft skills are synchronized with their resources and licenses.')
     except (ValueError, OSError) as error:
         errors.append(str(error))
     result = subprocess.run(['bash', '.claude/hooks/yaml-helper.sh', 'resolve_config',

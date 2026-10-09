@@ -33,3 +33,18 @@ The initial adaptation used upstream commit
 `be8993bbc5a1f016bc770b2846ce06272d284526` (framework 1.1.3).
 `tools/codex/upstream.json` records the currently integrated upstream commit.
 Future integrations preserve original commits through Git merges.
+
+## Game-craft skills
+
+The six native craft skills and their supporting files are unchanged selections
+from [awesome-gamedev-agent-skills](https://github.com/gamedev-skills/awesome-gamedev-agent-skills),
+created by **Abhishek Barali and the awesome-gamedev-agent-skills contributors**.
+They supply art-production, game-feel, animation, tilemap, and audio guidance.
+
+These files are licensed under **Apache-2.0**, separately from the MIT Studio
+framework and Codex adaptation. The original [LICENSE](third_party/gamedev-skills/LICENSE)
+and [NOTICE](third_party/gamedev-skills/NOTICE) are retained in their source
+directory and each generated native skill folder. The exact upstream commit
+and file hashes are recorded in [SOURCE.json](third_party/gamedev-skills/SOURCE.json).
+Source content is unmodified; the prototype orchestration and integration
+adapter are WebWork-rrs contributions. Inclusion does not imply endorsement.

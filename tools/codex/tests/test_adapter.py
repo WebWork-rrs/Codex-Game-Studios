@@ -20,7 +20,7 @@ class ConversionTests(unittest.TestCase):
     def test_full_conversion_keeps_resources_and_runs_configuration(self):
         from convert import build_artifacts
         artifacts = build_artifacts(ROOT)
-        skills = [p for p in artifacts if p.endswith('/SKILL.md')]
+        skills = [p for p in artifacts if p.startswith('.agents/skills/studio-') and p.endswith('/SKILL.md')]
         roles = [p for p in artifacts if p.startswith('.codex/agents/')]
         self.assertEqual(len(skills), len(list((ROOT / '.claude/skills').glob('*/SKILL.md'))))
         self.assertEqual(len(roles), len(list((ROOT / '.claude/agents').glob('*.md'))))

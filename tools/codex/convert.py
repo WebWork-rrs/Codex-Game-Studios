@@ -88,6 +88,63 @@ def adapt(text: str, names: list[str], skill: str | None = None) -> str:
     return re.sub(r'^[ \t]+$', '', text, flags=re.M)
 
 
+def gamecraft_artifacts(root: Path, catalog: list[str]) -> dict[str, bytes]:
+    """Copy pinned native skills, including resources and distribution notices."""
+    vendor = root / 'third_party/gamedev-skills'
+    manifest = vendor / 'SOURCE.json'
+    if not vendor.exists():
+        return {}
+    if not manifest.is_file():
+        raise ValueError('Missing game-craft source manifest: third_party/gamedev-skills/SOURCE.json')
+    metadata = json.loads(manifest.read_text(encoding='utf-8'))
+    if metadata.get('format_version') != 1 or not re.fullmatch(r'[0-9a-f]{40}', metadata.get('commit', '')):
+        raise ValueError('Invalid game-craft source version/commit')
+    skills, hashes = metadata.get('skills'), metadata.get('files')
+    if not isinstance(skills, dict) or not skills or not isinstance(hashes, dict):
+        raise ValueError('Invalid game-craft source skills/files')
+    data_by_path = {}
+    for relative, expected in hashes.items():
+        path = Path(relative)
+        if (path.is_absolute() or '..' in path.parts or '\\' in relative
+                or path.as_posix() != relative):
+            raise ValueError(f'Invalid game-craft source path: {relative}')
+        source = vendor / path
+        if source.resolve() != source:
+            raise ValueError(f'Invalid game-craft symlink path: {relative}')
+        if not source.is_file():
+            raise ValueError(f'Missing game-craft source: {relative}')
+        data = source.read_bytes()
+        if not data or digest(data) != expected:
+            raise ValueError(f'Game-craft source hash mismatch: {relative}')
+        data_by_path[relative] = data
+    for required in ('LICENSE', 'NOTICE'):
+        if required not in data_by_path:
+            raise ValueError(f'Missing game-craft distribution notice: {required}')
+    artifacts = {}
+    catalog.extend(['', '## Game-craft skills', '',
+                    'Pinned native skills from awesome-gamedev-agent-skills; see [asset setup](game-assets.md).', '',
+                    '| Skill | Purpose |', '| --- | --- |'])
+    for name, details in sorted(skills.items()):
+        if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', name) or name.startswith('studio-'):
+            raise ValueError(f'Invalid game-craft skill name: {name}')
+        prefix = f'skills/{name}/'
+        source_dir = vendor / 'skills' / name
+        actual = {p.relative_to(vendor).as_posix() for p in source_dir.rglob('*') if p.is_file()}
+        declared = {p for p in data_by_path if p.startswith(prefix)}
+        if actual != declared or prefix + 'SKILL.md' not in declared:
+            raise ValueError(f'Game-craft resources differ from source manifest: {name}')
+        entry = data_by_path[prefix + 'SKILL.md'].decode('utf-8')
+        if not re.search(r'^name:\s*' + re.escape(name) + r'\s*$', entry, re.M):
+            raise ValueError(f'Game-craft entrypoint name differs: {name}')
+        for relative in sorted(declared):
+            artifacts[f'.agents/skills/{name}/{relative[len(prefix):]}'] = data_by_path[relative]
+        for notice in ('LICENSE', 'NOTICE'):
+            artifacts[f'.agents/skills/{name}/{notice}'] = data_by_path[notice]
+        description = details['description'].replace('|', '\\|').replace('\n', ' ')
+        catalog.append(f'| `${name}` | {description} |')
+    return artifacts
+
+
 def build_artifacts(root: Path) -> dict[str, bytes]:
     sources = sorted((root / '.claude/skills').glob('*/SKILL.md'))
     names = [p.parent.name for p in sources]
@@ -116,6 +173,7 @@ def build_artifacts(root: Path) -> dict[str, bytes]:
                 data = adapt(data.decode('utf-8'), names, name).encode()
             artifacts[f'{destination}/{relative.as_posix()}'] = data
         catalog.append(f'| `$studio-{name}` | {description.replace(chr(124), chr(92) + chr(124))} |')
+    artifacts.update(gamecraft_artifacts(root, catalog))
     for source in sorted((root / '.claude/agents').glob('*.md')):
         meta, body = split_frontmatter(source.read_text(encoding='utf-8'))
         role = {'name': meta['name'], 'description': meta['description'],

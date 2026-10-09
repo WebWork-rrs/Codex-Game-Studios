@@ -47,6 +47,16 @@ arguments from the user's message. Resolve supporting resources relative to
 the selected skill folder. `.claude/docs`, `.claude/scripts`, `.claude/hooks`,
 and templates are intentional shared dependencies.
 
+For a small playable game with artwork, animation, or gameplay feedback, use
+`$studio-playable-prototype`. Its focused craft dependencies are native skills
+under `.agents/skills/`: `create-game-assets`, `game-feel`, `godot-animation`,
+`godot-tilemap`, `godot-audio`, and `audio-design`. Read only what applies.
+Keep the user's brief and existing art/audio choices; minimal rigor limits
+paperwork, not requested presentation quality. The skills do not include an
+image model or paid-service account. Use available image generation or
+licensed asset sources, integrate the real files, and observe the result.
+See `docs/game-assets.md`; report missing tools or unverified motion/audio.
+
 In upstream references, map `/NAME` to `$studio-NAME` for known studio
 workflows. Claude Read/Glob/Grep/Write/Edit/Bash/WebSearch are capabilities:
 use actual Codex file, patch, shell, and web tools. AskUserQuestion maps to an
@@ -129,6 +139,8 @@ Push warnings are advisory. Codex sandbox and approvals remain user-configured.
 
 Workflow and role copies are generated. Edit `.claude/` sources or
 `tools/codex/convert.py`, then run `python3 tools/codex/studio.py sync`.
+The six native game-craft skills are copied from the hash-pinned sources in
+`third_party/gamedev-skills/`; preserve their Apache-2.0 LICENSE and NOTICE.
 Sync refuses to overwrite customized generated files. Verify with:
 
 ```bash
