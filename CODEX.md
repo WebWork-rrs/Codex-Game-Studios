@@ -20,9 +20,9 @@ tools. It contains no finished game.
 
 ## Start here
 
-Open `/Volumes/AppsSSD/game-dev` as a project in the Codex app, or run `codex`
-from the repository root. For copies of the template, open the copied folder.
-Use current Codex; the installed CLI here is 0.157.0.
+Follow the [README quickstart](README.md#start-your-first-game) to create your
+own game repository. Open its cloned folder as a project in the Codex app,
+or run `codex` from the repository root. Use a current Codex client.
 
 Prerequisites: Git, Python 3.11+ for adapter tooling, Bash for upstream
 helpers, and your chosen engine when beginning engine setup. Claude Code,
