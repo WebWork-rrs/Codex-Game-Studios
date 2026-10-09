@@ -2,8 +2,10 @@
 
 This is a Codex adaptation of
 [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios),
-based on upstream commit `be8993bbc5a1f016bc770b2846ce06272d284526`, framework
-1.1.3. The original MIT license and Claude sources are retained.
+initially based on commit `be8993bbc5a1f016bc770b2846ce06272d284526`, framework
+1.1.3. The original studio was created by **Donchitos**; the original MIT
+license, copyright, and Claude sources are retained. See [credits](CREDITS.md).
+The current integrated upstream commit is recorded in `tools/codex/upstream.json`.
 
 ## What a GitHub template means
 
@@ -116,6 +118,8 @@ to generated files. Preserve those edits or move them into the source before
 syncing. Additional personal skills/roles are not removed. After an upstream
 upgrade, run sync, tests, and doctor. GitHub Actions checks adapter tests and
 generated-file drift.
+See [upstream synchronization](docs/upstream-sync.md) for daily update pull
+requests, merge conflict handling, and manual commands.
 
 Structural and operational adapter checks do not prove that every workflow
 performs correctly in every engine. Full game sessions for each engine have

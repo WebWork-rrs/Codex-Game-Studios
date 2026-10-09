@@ -1,0 +1,126 @@
+name: Sync upstream studio
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: upstream-studio-sync
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'WebWork-rrs/Codex-Game-Studios'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      changed: ${{ steps.prepare.outputs.changed }}
+      branch: ${{ steps.prepare.outputs.branch }}
+      head_sha: ${{ steps.prepare.outputs.head_sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Fetch the original framework and existing proposal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add upstream https://github.com/Donchitos/Claude-Code-Game-Studios.git
+          git fetch --no-tags upstream main:refs/remotes/upstream/main
+          if test -n "$(git ls-remote --heads origin refs/heads/automation/upstream-sync)"; then
+            git fetch origin refs/heads/automation/upstream-sync:refs/remotes/origin/automation/upstream-sync
+          fi
+      - name: Merge and regenerate on a review branch
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if git show-ref --verify --quiet refs/remotes/origin/automation/upstream-sync; then
+            args+=(--existing-ref refs/remotes/origin/automation/upstream-sync)
+          fi
+          python3 tools/codex/upstream_sync.py "${args[@]}" \
+            --output "$GITHUB_OUTPUT" \
+            --bundle .codex-test-tmp/update/proposal.bundle \
+            --report .codex-test-tmp/update/pull-request.md
+      - name: Verify the updated adaptation
+        if: steps.prepare.outputs.changed == 'true'
+        run: |
+          python3 -m unittest discover -s tools/codex/tests -v
+          python3 tools/codex/studio.py sync --check
+          python3 tools/codex/studio.py validate
+          git diff --check
+      - name: Transfer the verified proposal
+        if: steps.prepare.outputs.changed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: verified-upstream-proposal
+          path: .codex-test-tmp/update/*
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7
+      - name: No new upstream changes
+        if: steps.prepare.outputs.changed != 'true'
+        run: echo 'Already synchronized with Donchitos. No new pull request changes are needed.' >> "$GITHUB_STEP_SUMMARY"
+  publish:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Keep the publisher on trusted main: do not execute proposed source
+      # scripts with write credentials. The bundle is data until reviewed.
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v8
+        with:
+          name: verified-upstream-proposal
+          path: .codex-test-tmp/publish
+      - name: Push proposal without rewriting history
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROPOSAL_BRANCH: ${{ needs.prepare.outputs.branch }}
+          PROPOSAL_HEAD: ${{ needs.prepare.outputs.head_sha }}
+        run: |
+          python3 tools/codex/upstream_sync.py \
+            --publish-bundle .codex-test-tmp/publish/proposal.bundle \
+            --branch "$PROPOSAL_BRANCH" --expected-head "$PROPOSAL_HEAD"
+      - name: Open or update the pull request
+        if: vars.UPSTREAM_CREATE_PULL_REQUESTS == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PROPOSAL_BRANCH: ${{ needs.prepare.outputs.branch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          number=$(gh pr list --head "$PROPOSAL_BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+          if test -n "$number"; then
+            gh pr edit "$number" --title 'Sync upstream game studio updates' \
+              --body-file .codex-test-tmp/publish/pull-request.md
+          else
+            gh pr create --head "$PROPOSAL_BRANCH" --base main \
+              --title 'Sync upstream game studio updates' \
+              --body-file .codex-test-tmp/publish/pull-request.md
+          fi
+      - name: Show the proposal when automatic PR creation is disabled
+        if: vars.UPSTREAM_CREATE_PULL_REQUESTS != 'true'
+        env:
+          GH_REPO: ${{ github.repository }}
+        run: echo "Prepared update branch. Create a PR at https://github.com/$GH_REPO/compare/main...automation%2Fupstream-sync?expand=1" >> "$GITHUB_STEP_SUMMARY"

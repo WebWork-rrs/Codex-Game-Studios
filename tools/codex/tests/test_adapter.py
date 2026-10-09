@@ -22,8 +22,8 @@ class ConversionTests(unittest.TestCase):
         artifacts = build_artifacts(ROOT)
         skills = [p for p in artifacts if p.endswith('/SKILL.md')]
         roles = [p for p in artifacts if p.startswith('.codex/agents/')]
-        self.assertEqual(len(skills), 74)
-        self.assertEqual(len(roles), 49)
+        self.assertEqual(len(skills), len(list((ROOT / '.claude/skills').glob('*/SKILL.md'))))
+        self.assertEqual(len(roles), len(list((ROOT / '.claude/agents').glob('*.md'))))
         self.assertIn('.agents/skills/studio-setup-engine/references/7.5-scaffold.md', artifacts)
         skill = artifacts['.agents/skills/studio-dev-story/SKILL.md'].decode()
         self.assertIn('name: studio-dev-story', skill)

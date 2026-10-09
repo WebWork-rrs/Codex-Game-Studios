@@ -1,7 +1,19 @@
-> **Codex adaptation:** This checkout includes 74 studio skills, 49 roles,
-> `AGENTS.md`, and native lifecycle validation adapters. See [CODEX.md](CODEX.md).
-> In a new Codex session, use `$studio-start` or ask Codex to read `AGENTS.md`
-> and help you start a game. The original Claude documentation follows.
+# Codex Game Studios
+
+An independent Codex adaptation of
+[Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios),
+**created and maintained by [Donchitos](https://github.com/Donchitos)**.
+The original studio architecture, roles, workflows, rules, and templates are
+Donchitos's work. This repository adds the Codex compatibility layer,
+maintained by [WebWork-rrs](https://github.com/WebWork-rrs).
+
+The original **MIT license and Copyright (c) 2026 Donchitos** are retained.
+See [credits](CREDITS.md) and
+[support the original creator](https://github.com/sponsors/Donchitos).
+
+Start with [CODEX.md](CODEX.md), then use `$studio-start` in a new Codex
+session. [Upstream synchronization](docs/upstream-sync.md) explains daily
+update pull requests and manual updates. The original README follows.
 
 <p align="center">
   <h1 align="center">Claude Code Game Studios</h1>
