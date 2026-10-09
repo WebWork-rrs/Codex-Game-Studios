@@ -576,34 +576,14 @@ sys.stdout.buffer.write(("CCGS-JSON-CHECKED\n" + "".join("B\t" + p + "\n" for p 
     fi
 fi
 
-# Check design documents for the sections REQUIRED AT THIS PROJECT'S TIER.
-#
-# Demanding all 8 sections unconditionally would contradict
-# .claude/docs/coding-standards.md and workflow-modes.md: the required count is
-# a function of `modes.workflow` -- 8 at `full`, 5 (+ conditional Formulas) at
-# `standard`, and no GDD requirement at all at `minimal`. A jam project on the
-# recommended `minimal` tier was being warned about six sections its own
-# configuration says it does not need, which trains the user to ignore the hook.
-# Source the config helper ONCE, ahead of every consumer below. It was
-# previously sourced inside the design-doc branch, so the code scans further
-# down -- which now need resolve_code_root -- could not reach it on a commit
-# that staged no GDD.
-# Detect success by asking whether the function EXISTS, not by the source's exit
-# status. A sourced file returns the status of its last statement, which here is
-# incidental -- gating on it left _VC_HELPER at 0 on a perfectly good source, the
-# workflow tier silently stayed at its "standard" fallback, and the GDD section
-# check stopped scaling with the tier.
+# The structure helper owns headings, aliases and tier/conditional rules.
+# Commit warnings remain advisory; missing checks are explicit, never a pass.
 _VC_HELPER=0
 if [ -f .claude/hooks/yaml-helper.sh ]; then
     . .claude/hooks/yaml-helper.sh 2>/dev/null || true
     command -v resolve_setting >/dev/null 2>&1 && _VC_HELPER=1
 fi
-
-# design/gdd/ also holds governance and registry files that are not system
-# GDDs and have none of these sections, so they warned on every commit (#133).
-# Skip the names not_a_system_gdd() skips in gdd-structure-check.sh and
-# review-scope.sh; keep the three lists the same.
-DESIGN_FILES=$(echo "$STAGED" | grep -E '^design/gdd/' \
+DESIGN_FILES=$(echo "$STAGED" | grep -E '^design/gdd/[^/]+\.md$' \
   | grep -vE '/(game-concept|systems-index|game-pillars|gdd-cross-review-[^/]*|gameplay-tags|fixture-swap-ledger|entity-registry|sound-bible)\.md$')
 if [ -n "$DESIGN_FILES" ]; then
     WORKFLOW="standard"
@@ -611,66 +591,16 @@ if [ -n "$DESIGN_FILES" ]; then
         W=$(resolve_setting modes.workflow 2>/dev/null | cut -f1)
         [ -n "$W" ] && WORKFLOW="$W"
     fi
-
-    # "Detailed" (not "Detailed Rules") because the canonical heading has a
-    # documented alias, "Detailed Design" -- workflow-modes.md says not to treat
-    # one as missing when the other is present.
-    case "$WORKFLOW" in
-        minimal) REQUIRED="" ;;
-        full)    REQUIRED="Overview|Player Fantasy|Detailed|Formulas|Edge Cases|Dependencies|Tuning Knobs|Acceptance Criteria" ;;
-        *)       REQUIRED="Overview|Detailed|Edge Cases|Dependencies|Acceptance Criteria" ;;
-    esac
-
-    if [ -n "$REQUIRED" ] && [ -z "$_VC_PY" ]; then
-        # A skipped step announces itself (obligation 3, as below). Handing the
-        # scan to a `python` that is not there printed nothing, which read as a
-        # GDD with every section its tier requires.
-        WARNINGS="$WARNINGS\nSKIPPED: no Python 3 interpreter found (tried python, python3, py), so the GDD section check did NOT run on the staged design doc(s)."
-    elif [ -n "$REQUIRED" ]; then
-        # One pass for every file x section pair.
-        #
-        # A nested shell loop -- for each staged design doc, `echo |
-        # tr | while read` then one `grep -qi` per required section -- does not
-        # scale. At workflow=full that is 8 greps per file, and each is a
-        # process, so an ordinary project of about 50 GDDs would use nearly all
-        # of this hook's 15s budget on the ADVISORY half alone.
-        #
-        # Matching is unchanged on purpose: case-insensitive SUBSTRING anywhere
-        # in the file, exactly what `grep -qi "$section"` did. It is looser than
-        # a heading check, and tightening it here would silently change which
-        # documents warn -- a behaviour change smuggled inside a performance
-        # fix. If that wants tightening it should be its own change with its
-        # own test.
-        printf '%s\n' "$DESIGN_FILES" | "$_VC_PY" -c '
-import sys, os
-argv = sys.argv
-required = [x for x in argv[1].split("|") if x]
-workflow = argv[2]
-out = []
-for line in sys.stdin.read().splitlines():
-    path = line.strip()
-    if not path or not path.endswith(".md") or not os.path.isfile(path):
-        continue
-    try:
-        with open(path, "r", encoding="utf-8", errors="replace") as fh:
-            body = fh.read().lower()
-    except OSError:
-        continue
-    for section in required:
-        if section.lower() not in body:
-            out.append("DESIGN: %s missing section required at workflow=%s: %s"
-                       % (path, workflow, section))
-if out:
-    # Bytes, not text -- see the CRLF note in the JSON scan above.
-    sys.stdout.buffer.write(("\n".join(out) + "\n").encode("utf-8"))
-' "$REQUIRED" "$WORKFLOW" > "$TMP_DESIGN" 2>/dev/null
-        if [ -z "$TMP_DESIGN" ]; then
-            # Obligation 3 of .claude/rules/skill-authoring.md: a skipped step
-            # announces itself. Silence here is indistinguishable from a GDD
-            # that already has every section its tier requires.
-            WARNINGS="$WARNINGS\nSKIPPED: no writable scratch location, so the GDD section check did NOT run on the staged design doc(s)."
-        elif [ -s "$TMP_DESIGN" ]; then
-            WARNINGS="$WARNINGS\n$(cat "$TMP_DESIGN")"
+    if [ "$WORKFLOW" != minimal ]; then
+        if [ -z "$_VC_PY" ] || [ ! -f .claude/scripts/gdd-structure.py ]; then
+            WARNINGS="$WARNINGS\nSKIPPED: GDD structure check needs Python 3 and .claude/scripts/gdd-structure.py."
+        elif [ -z "$TMP_DESIGN" ]; then
+            WARNINGS="$WARNINGS\nSKIPPED: no writable scratch location for the GDD structure check."
+        else
+            printf '%s\n' "$DESIGN_FILES" | "$_VC_PY" .claude/scripts/gdd-structure.py --commit --tier "$WORKFLOW" --working-tree-paths "$WT_FILES" > "$TMP_DESIGN" 2>&1
+            _VC_DESIGN_STATUS=$?
+            [ -s "$TMP_DESIGN" ] && WARNINGS="$WARNINGS\n$(cat "$TMP_DESIGN")"
+            [ "$_VC_DESIGN_STATUS" -ne 0 ] && WARNINGS="$WARNINGS\nSKIPPED: GDD structure check did not complete; inspect the NOT ASSESSED reason above."
         fi
     fi
 fi

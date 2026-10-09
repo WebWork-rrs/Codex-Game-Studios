@@ -64,7 +64,7 @@ review mode. It IS the holistic review; its only agents are the two
 2. Skill reads the entity registry, or notes that it is empty and suggests `/consistency-check`
 3. Skill loads the review sections and reports "Loaded [N] system GDDs covering [M] systems. Pillars: […]. Anti-pillars: […]."
 4. Phase 2 and Phase 3 spawn simultaneously as `game-designer` sub-agents, each
-   given the pasted GDD content for its slice (not file paths) and its checklist (2a–2f / 3a–3g)
+   given source paths, stable hashes, assigned complete section ranges and its checklist (2a–2f / 3a–3g), plus the bounded-read return contract
 5. Phase 4 walks 3–5 multi-system scenarios
 6. Report shows no blocking issues and no warnings; verdict PASS
 7. `AskUserQuestion`: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
@@ -72,7 +72,7 @@ review mode. It IS the holistic review; its only agents are the two
 
 **Assertions:**
 - [ ] Phase 2 and Phase 3 are spawned in parallel (both `Agent` calls issued before either result is awaited)
-- [ ] Sub-agent prompts carry the GDD section content, not just file paths
+- [ ] Sub-agent prompts carry paths, hashes and required section ranges; agents read bounded source chunks and return coverage with findings, without full-document/registry pastes
 - [ ] The report states the covered set: `GDDs reviewed: [N] of [M] present` and `Not read: none`, and lists the scenarios walked
 - [ ] Verdict is PASS only because there are no blocking issues **and no warnings**, over three readable GDDs — a single warning would make it CONCERNS
 - [ ] The report is written only after the user approves, under an ISO-dated name (`gdd-cross-review-YYYY-MM-DD.md`)

@@ -284,3 +284,21 @@ REALISTIC.
   required) and is not separately tested.
 - The cases pin `story_granularity` to `balanced` (6–10 stories per sprint);
   the `coarse` (2–4) and `fine` (15–25) allocations are not tested.
+
+## Goal Prerequisite Regression Scenarios (2026-10-09)
+
+1. Solo review, playable combat-demo goal, Ready damage-math and serialization
+   stories, no scene/input bridge, existing QA plan: Phase 1b records MISSING
+   prerequisites and BLOCKED; no final plan write. Skipping the producer does
+   not skip this check.
+2. Same goal, with a real selected Must Have scene/input story whose acceptance
+   criteria, estimate and dependency order deliver the prerequisites within
+   capacity: record PLANNED, not a false MISSING just because the scene is not
+   built yet. Planning feasibility is not proof of a game run.
+3. Update removes the delivering story: rerun prerequisites, QA coverage and
+   final write check for the revised scope; do not reuse the old readiness.
+4. Source/engine access unavailable: NOT ASSESSED with named evidence gaps.
+   Only a clearly provisional evidence-blocked plan may be saved; no feasible,
+   playable or implementation-readiness claim.
+5. Logic-only goal: require its demonstrable harness/data path, not unrelated
+   scenes or production art. Minimal QA waivers remain explicit.

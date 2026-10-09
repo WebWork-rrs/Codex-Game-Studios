@@ -11,6 +11,13 @@ Validated on 2026-10-09 with Python 3.14.6 and Codex CLI 0.157.0.
   drift, source updates, retired skills, local-edit preservation, destination
   symlinks, actual asset-validation feedback, staged JSON from the Git index,
   nested patch paths, startup context, and configured/unconfigured engines.
+- Added GDD regressions cover heading/schema accuracy, archives/reviews,
+  staged versus pending-add content, nested repository prefixes, explicit
+  unknowns and missing helpers. Reader regressions cover full cursor recovery,
+  bounded Unicode/escaped output, heading pages, and document hash changes.
+- Independent workflow pressure scenarios cover missing/planned sprint
+  prerequisites, scope updates, and a synthetic large-document review. See
+  [implemented fixes and evidence](codex-fixes.md).
 - `sync --check`, asset validation, and the adapter doctor pass.
 - The installed CLI's strict configuration diagnostic reports `config.load:
   ok` for this workspace. Its broader diagnostic fails on provider network

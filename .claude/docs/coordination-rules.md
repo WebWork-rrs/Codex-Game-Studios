@@ -53,3 +53,18 @@ When an orchestration skill spawns multiple independent agents:
 2. Collect all results before proceeding to dependent phases
 3. If any agent is BLOCKED, surface it immediately — do not silently skip
 4. Always produce a partial report if some agents complete and others block
+
+## Document Review Briefs and Returns
+
+Use `.claude/docs/bounded-document-reading.md` for document-review delegation.
+Each brief names the objective/domain, source paths, named sections or exact
+ranges, relevant configuration, cross-document questions, and compact findings
+so far. Agents inventory headings and read their assigned ranges in successive
+bounded chunks themselves; do not multiply full documents across agent prompts.
+
+Each return contains required/read/unreviewed ranges, prioritized findings with
+path/line evidence and fixes, disagreements, and assessment status. The parent
+verifies coverage before synthesis; summaries and truncated reads are not proof
+of complete review. Carry exact gaps as `NOT ASSESSED`, keep known failures
+visible, and withhold approval while required scope remains unreviewed. Queue
+additional independent reviews within the runtime's concurrency slots.

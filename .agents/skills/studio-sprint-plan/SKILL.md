@@ -37,6 +37,11 @@ upstream documents. Work from the repository root.
   settings from `project.yaml` and explicitly reads the matching version
   reference. `@file` imports, Claude settings, status lines, and permissions
   do not configure Codex. Preserve `AGENTS.md` during engine setup.
+- For design/architecture/registry/review inputs, apply
+  `.claude/docs/bounded-document-reading.md`: inventory ranges and read with
+  `.claude/scripts/read-markdown.py` using returned line/column cursors.
+  Upstream "read in full" means complete coverage through bounded chunks,
+  never an unbounded tool response. Record gaps as NOT ASSESSED.
 - Edit upstream skill/role sources under `.claude/`, then run
   `python3 tools/codex/studio.py sync` to regenerate Codex copies. Do not edit
   generated files directly. Apply the same rule to framework self-tests.
@@ -45,7 +50,7 @@ upstream documents. Work from the repository root.
 **Execute before proceeding** (from the repository root):
 
 ```bash
-bash ".claude/hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,story_granularity,workflow
+bash ".claude/hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,story_granularity,workflow,qa.level,engine.name,engine.version
 ```
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
 defaults in `.claude/docs/config-resolution.md`.
@@ -75,6 +80,9 @@ See `.claude/docs/director-gates.md` for the full check pattern. Individual gate
 Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 (collaborative asks always · guided major-only · autonomous logs and proceeds;
 `automation_always_ask` categories always prompt).
+Apply the user's existing authorization first: routine reversible work already
+authorized does not need another per-file write ask. Ask for unresolved design
+choices, material scope changes, or work outside that authorization.
 
 **`story_granularity`** — it sets how
 many stories to allocate per sprint, scaled by velocity: **2–4** at `coarse` (the default, via `rigor: minimal`),
@@ -146,17 +154,90 @@ smaller than the range is planned whole — never padded with invented stories.
 
 ---
 
+## Phase 1b: Sprint Goal Prerequisites
+
+**Required for `new` and `update` in every review mode (`solo`, `lean`, `full`).**
+This is a direct planning check, not an extra producer spawn. `status` remains
+read-only. At `minimal`, sprint planning is still optional; when invoked, keep
+this check to the proposed goal and its critical path.
+
+1. **State the demonstrable goal** from the milestone, brief/GDD, and requested
+   changes: what can a player or reviewer do at sprint end, in which scene,
+   build, or test harness, and what observable result proves it? A logic-only
+   sprint can demonstrate behavior in a harness; a playable-demo goal needs a
+   runnable player flow. Story titles and a Ready status alone do not establish
+   either goal. Read the candidate stories' acceptance criteria and dependencies.
+
+2. **Inspect the actual project** for prerequisites implied by that goal:
+   runnable scene/level and entry point, player input and control wiring,
+   necessary assets/data (including acceptable placeholders), build/run path,
+   verification harness, and configuration. Resolve roots from `engine.name`:
+   Godot `src/` and `tests/` plus `project.godot`; Unity `Assets/`,
+   `Assets/Tests/`, and `ProjectSettings/`; Unreal `Source/<Module>/`, its test
+   directories, `Content/`, `Config/`, and the `.uproject`. Follow referenced
+   scenes, input maps, assets, and runner settings to their real paths; do not
+   infer absence from a search confined to another engine's roots. If the engine
+   or access is unavailable, name exactly what could not be inspected.
+   Derive required rows from the goal, not a fixed checklist of unrelated systems.
+
+3. **Prepare the required prerequisite table** used in Phase 2. Every required
+   prerequisite is one of:
+   - **PRESENT** — inspected source/configuration path and relevant behavior;
+     distinguish inspected wiring from a run actually observed.
+   - **PLANNED** — an existing selected Must Have or carryover story's real ID
+     and path, acceptance criteria that deliver the prerequisite, estimate, and
+     dependency order before its consumers and the end-of-sprint demonstration.
+     The ordered work must fit capacity. An absent scene or input map is valid
+     planned work when such a story delivers it this sprint; it is not blocked
+     merely because implementation has not started.
+   - **MISSING** — inspection found it absent and no selected story delivers it,
+     or the dependency order/capacity cannot deliver it in time.
+   - **NOT ASSESSED** — inspection could not run; name the missing input, access,
+     or tool and its effect on the goal. Unknown is not PRESENT or PLANNED.
+   For a category irrelevant to this goal, state `N/A — [reason]`; do not make
+   every sprint require a playable scene or production art.
+
+4. **Resolve gaps before claiming feasibility.** For MISSING rows, revise the
+   goal to a supported deliverable or select/create actual implementable
+   prerequisite stories via `$studio-create-stories` within the authorized scope, then
+   re-read their saved files and re-run this check. Do not add invented IDs or
+   placeholder tasks to make the table look complete. Ask only for missing design
+   decisions or a material scope/capacity change not already authorized.
+   Until repaired, verdict **BLOCKED**; no final plan write. If a required input
+   cannot be inspected, verdict **NOT ASSESSED** with the reason; a provisional
+   plan may record that limitation but must not claim the goal is feasible or
+   playable. Otherwise verdict **FEASIBLE AS PLANNED**, not proof the game runs.
+   Aggregate precedence: **BLOCKED > NOT ASSESSED > FEASIBLE AS PLANNED**.
+
+Re-run Phase 1b after any goal, selected-story, dependency, or capacity change,
+including update requests and producer revisions. All writes converge on Phase
+5; its final check must use this table for the final scope.
+
+---
+
 ## Phase 2: Generate Output
 
 For `new`:
 
-**Generate a sprint plan** following this format and present it to the user. Do NOT ask to write yet — the gate phases run first and may require revisions before the file is written: the producer feasibility gate (Phase 4, spawned only in `full` review mode — skipped in `lean`/`solo`) and the QA plan check (Phase 5, all modes).
+**Generate a sprint plan** following this format and present it to the user. Do NOT ask to write yet — the Phase 1b prerequisite check (all modes), producer feasibility gate (Phase 4, spawned only in `full` review mode — skipped in `lean`/`solo`), and QA plan check (Phase 5, all modes) may require revisions before the file is written.
+Scale the Definition of Done to the resolved `qa.level` and workflow: at
+`minimal`, automated tests are waived/advisory, not a new planning blocker.
+Record waived or inapplicable checks by name; player-visible delivery still
+needs a run observed and retained evidence, not only a parse check.
 
 ```markdown
 # Sprint [N] — [Start Date] to [End Date]
 
 ## Sprint Goal
-[One sentence describing what this sprint achieves toward the milestone]
+[One sentence describing the observable end-of-sprint demonstration]
+
+## Goal Prerequisites (Required — Phase 1b)
+| Prerequisite | Status | Evidence path or selected story ID/path and acceptance criteria | Dependency order / capacity | Gap or assessment limitation |
+|--------------|--------|----------------------------------------------------------------|-----------------------------|-----------------------------|
+
+**Prerequisite verdict:** [FEASIBLE AS PLANNED / BLOCKED / NOT ASSESSED — reason]
+**Demonstration / verification path:** [scene/build/harness and observable result;
+state what was inspected, what was run, and what remains unverified]
 
 ## Capacity
 - Total days: [X]
@@ -206,10 +287,10 @@ For `update`:
 
 1. Read the most recent sprint plan from `production/sprints/`.
 2. Present the current story list with their current statuses from `production/sprint-status.yaml`.
-3. Ask the user what to change: stories to add, remove, reprioritize, or re-estimate. Use `AskUserQuestion` to gather changes.
-4. Apply the changes and re-present the full revised plan for review.
-5. Re-run the producer feasibility gate (Phase 4) on the revised plan.
-6. Write the updated markdown plan and yaml together (same approval as `new` mode).
+3. Apply changes already requested; use `AskUserQuestion` only if the intended changes need clarification.
+4. Re-run Phase 1b for the revised goal and story selection; add or refresh the required prerequisite table even if the old plan lacks one. Re-present the full revised plan for review.
+5. Prepare the revised status yaml (Phase 3) and run Phase 4 according to review mode.
+6. Run Phase 5 on the revised scope, then write both files only through its final write check (same authorization rules as `new`). There is no direct update write shortcut.
 
 Note: `update` mode does not reset story statuses. Stories already marked `in-progress` or `done` keep their status. Only `backlog` and `ready-for-dev` stories can be removed or reprioritized freely.
 
@@ -254,7 +335,7 @@ After generating a new sprint plan, also prepare the `production/sprint-status.y
 This is the machine-readable source of truth for story status — read by
 `$studio-sprint-status`, `$studio-story-done`, and `$studio-help` without markdown parsing.
 
-**Do not write the yaml yet** — hold it in context. The producer feasibility gate (Phase 4, `full` review mode only) may revise the story list; the QA plan check (Phase 5) runs in every mode. Both files are written together after Phase 5 in a single write approval.
+**Do not write the yaml yet** — hold it in context. The producer feasibility gate (Phase 4, `full` review mode only) may revise the story list; re-run Phase 1b for those revisions. The QA plan check (Phase 5) runs in every mode. Both files are written together only through Phase 5's final write check.
 
 Format:
 
@@ -309,7 +390,7 @@ stories that haven't changed, add new stories, remove dropped ones.
 
 Before finalising the sprint plan, spawn `producer` via `Agent` using gate **PR-SPRINT** (`.claude/docs/director-gates/pr-sprint.md`).
 
-Pass: proposed story list (titles, estimates, dependencies), total team capacity in hours/days, any carryover from the previous sprint, milestone constraints and deadline.
+Pass: proposed story list (titles, estimates, dependencies), the Phase 1b goal/prerequisite table and verdict, total team capacity in hours/days, any carryover from the previous sprint, milestone constraints and deadline.
 
 Present the producer's assessment.
 
@@ -328,8 +409,10 @@ If [A]: continue to Phase 5.
 If [B]: revise the story list, re-present the updated plan, then continue to Phase 5.
 If [C]: adjust sprint dates and capacity, re-present the updated plan, then continue to Phase 5.
 
-After handling the producer's verdict, continue to Phase 5. The write comes at
-its end, so the file you approve already holds everything Phase 5 adds.
+After handling the producer's verdict, re-run Phase 1b for any changed scope,
+dependencies, or capacity, and refresh the draft yaml. Then continue to Phase 5.
+The write comes at its end, so the file you review already holds everything
+Phase 5 adds. PR-SPRINT cannot override a BLOCKED or NOT ASSESSED prerequisite.
 
 ---
 
@@ -339,7 +422,15 @@ Before closing the sprint plan, check whether a QA plan exists for this sprint.
 
 Use `Glob` for `production/qa/qa-plan-*.md` — `$studio-qa-plan` writes `qa-plan-[sprint-slug]-[date].md` — and keep a file whose name or content references this sprint number.
 
-**If a QA plan is found**: note it in the sprint plan output — "QA Plan: `[path]`" — and proceed.
+**If a QA plan is found**: read its relevant sections and confirm it covers the
+final selected stories and demonstration path. Record "QA Plan: `[path]`" and
+any coverage gaps; file existence does not prove runnable prerequisites or
+passing QA. Missing coverage needs a QA-plan update before implementation.
+
+**If QA-plan discovery or reading could not run**: record `QA plan check: NOT
+ASSESSED — [access/input/tool]` and the unverified coverage in the plan. Do not
+report that no plan exists or that the check passed. A provisional write must
+carry this limitation and cannot claim implementation readiness.
 
 **If no QA plan exists**: do not silently proceed. Surface this explicitly:
 
@@ -353,23 +444,40 @@ Use `AskUserQuestion`:
   - `[A] Run $studio-qa-plan sprint now — I'll do that before starting implementation (Recommended)`
   - `[B] Skip for now — I understand QA sign-off will be blocked at the Production → Polish gate`
 
-Wait for this answer before the write ask below — the two are separate questions.
+If this decision requires an answer under the automation rules and existing
+authorization, wait for it before writing. Missing QA remains explicitly
+unresolved; choosing a follow-up is not a passed QA check.
 
 If [A]: note in the plan "QA plan: run `$studio-qa-plan sprint` before implementation begins."
 If [B]: add a warning block to the sprint plan document:
 
 ```markdown
 > ⚠️ **No QA Plan**: This sprint was started without a QA plan. Run `$studio-qa-plan sprint`
-> before the last story is implemented. The Production → Polish gate requires a QA
+> before implementation begins. The Production → Polish gate requires a QA
 > sign-off report, which requires a QA plan.
 ```
 
 ### Write the plan
 
-Ask: "May I write the sprint plan to `production/sprints/sprint-NNN.md` (`[N]` zero-padded to three digits) and
-`production/sprint-status.yaml`?" If yes, write both files (creating directories as
-needed). Verdict: **COMPLETE** — sprint plan and status file created. If no:
-Verdict: **BLOCKED** — user declined write.
+**Final write check — required for every `new`/`update`, including authorized
+direct writes:** the final markdown must contain the Phase 1b table, evidence,
+verdict, and demonstration path, consistent with the final yaml/story list and
+capacity. Re-run stale or skipped checks. A MISSING prerequisite or BLOCKED
+verdict stops the write until repaired. NOT ASSESSED prerequisites or unresolved
+QA may be written only as an explicitly provisional plan with the reasons,
+named evidence still blocking readiness, and required follow-up. NOT ASSESSED
+prerequisites cannot support a feasible/playable claim; unresolved QA cannot
+support a QA pass or implementation-readiness claim.
+
+Present the final plan and its limitations. If the write is already authorized,
+write `production/sprints/sprint-NNN.md` (`[N]` zero-padded to three digits) and
+`production/sprint-status.yaml` together (creating directories as needed).
+Otherwise apply the automation rules and ask, when required: "May I write the
+sprint plan to `production/sprints/sprint-NNN.md` and
+`production/sprint-status.yaml`?" An unanswered required ask does not authorize
+writing. Verdict: **COMPLETE** — plan and status file written, naming any
+provisional limitations; this is not a gameplay or QA pass. If declined:
+**BLOCKED** — user declined write.
 
 After writing, add:
 

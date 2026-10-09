@@ -236,6 +236,7 @@ converter refuses to overwrite customized generated files.
 - [Complete workflow catalog](docs/codex-workflows.md)
 - [Upstream synchronization](docs/upstream-sync.md)
 - [Adapter validation and known limits](docs/codex-validation.md)
+- [Implemented upstream fixes and evidence](docs/codex-fixes.md)
 - [Original Claude Code Game Studios documentation](https://github.com/Donchitos/Claude-Code-Game-Studios#readme)
 - [Credits](CREDITS.md) · [MIT license](LICENSE)
 

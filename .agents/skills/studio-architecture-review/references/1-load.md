@@ -31,7 +31,8 @@ Bash: bash .claude/scripts/review-receipts.sh check "[latest-report]" docs/archi
   reason to stand on a prior report. Never read a set of `UNCHANGED` lines as
   "everything is current" while an `UNRESOLVED` line is present — the set
   compared was not the set requested.
-- **Everything `UNCHANGED`** (and no `UNRESOLVED`) — nothing this review
+- **Everything `UNCHANGED`** (and no `UNRESOLVED`, with explicit complete required
+  coverage in the prior report) — nothing this review
   reads has changed since that report; re-running reproduces it. Surface the
   prior report's date and verdict and offer via `AskUserQuestion`: `[A] Stand
   on the prior report (Recommended)` / `[B] Re-run the full review anyway` —
@@ -45,6 +46,10 @@ Bash: bash .claude/scripts/review-receipts.sh check "[latest-report]" docs/archi
   existed. Proceed with the full review; this run's report will carry the
   first stamps.
 
+A prior report without complete reading coverage cannot establish that an
+unchanged input was fully assessed. Re-run with the bounded protocol below;
+input hashes alone are not coverage evidence.
+
 Before reading any full document, use Grep to extract `## Summary` sections
 from all GDDs and ADRs:
 
@@ -57,7 +62,8 @@ Grep pattern="## Summary" glob="docs/architecture/adr-*.md" output_mode="content
 `design/gdd/*.md` and count **N**. A scan matching fewer than N means those GDDs
 predate `## Summary` (`$studio-design-system` emits it, but older GDDs lack it) — never
 treat an absent Summary as a system out of scope. A zero-match scan means "no GDD
-carries a Summary yet", not "nothing to review": full-read the unmatched set.
+carries a Summary yet", not "nothing to review": review the unmatched set with
+full bounded reads under Phase 1b's protocol.
 
 For `single-gdd [path]` mode: use the target GDD's summary to identify which
 ADRs reference the same system (Grep ADRs for the system name), then load only
@@ -71,6 +77,16 @@ For `coverage` or `full` mode: proceed to Phase 1b for the full in-scope set.
 narrow cases that still justify escalating to a whole document.
 
 ### Phase 1b — L1/L2: Targeted Section Load
+
+Read `.claude/docs/bounded-document-reading.md`. For each in-scope file, inventory
+all heading/range pages with
+`python3 .claude/scripts/read-markdown.py index "[path]" --offset 0 --limit 30`.
+Read every selected section range, including nested subsections, using successive
+`python3 .claude/scripts/read-markdown.py read "[path]" --start [line] --max-lines 120 --max-chars 8000`
+calls and the returned actual line/column cursor. Keep required/read/unreviewed
+ranges. Fixed-context grep output and summaries are discovery previews, not
+complete section reads. All whole-file fallbacks below use the same protocol,
+including preamble, unheaded text, and oversized-line fragments.
 
 Load the sections the later phases actually consume — **not whole files**. This
 skill reads the two largest document sets in the project (every GDD *and* every
@@ -90,17 +106,18 @@ constraints, engine capabilities, cross-system communication, persistence,
 threading, platform needs. Those live in a known set of sections; Overview and
 Player Fantasy are narrative and yield none.
 
-```
-Grep pattern="^## (Detailed Rules|Detailed Design|Formulas|Dependencies|Tuning Knobs|Acceptance Criteria)" glob="design/gdd/*.md" output_mode="content" -A 40
-```
+From each heading inventory select the complete Detailed Rules / Detailed Design,
+Formulas, Dependencies, Tuning Knobs, and Acceptance Criteria ranges. Read them
+to completion; a 40-line preview cannot establish their coverage.
 
 Accept **either** `## Detailed Rules` or `## Detailed Design` — the design
 standard and the GDD template disagree on the name and they denote the same
-required section. Full-read a single GDD only when a scanned section
+required section. Full-read a single GDD in bounded chunks when a selected section
 cross-references material outside itself, or when a GDD matched zero sections
 (it predates the template — read it whole and say so).
 
-- `design/gdd/systems-index.md` — the authoritative list of systems; read whole (small, and it is an index)
+- `design/gdd/systems-index.md` — the authoritative list of systems; read whole
+  in bounded chunks, verifying its line count rather than assuming it is small
 
 ### Architecture Documents
 
@@ -108,20 +125,21 @@ Phases 3–5 need the traceability table, the decision itself, engine claims, an
 the dependency edges — not Context, Consequences, Alternatives, Migration Plan or
 Validation Criteria, which explain *why* a decision was made.
 
-```
-Grep pattern="^## (Status|Decision|GDD Requirements Addressed|Engine Compatibility|ADR Dependencies|Performance Implications)" glob="docs/architecture/adr-*.md" output_mode="content" -A 30
-```
+Select the complete Status, Decision, GDD Requirements Addressed, Engine
+Compatibility, ADR Dependencies, and Performance Implications ranges from each
+ADR's heading inventory; read all their chunks. A 30-line preview is not a full
+section. Record absent headings separately from unread content.
 
 Interpret against **N_adr**, and distinguish the two zero-match cases — they are
 not the same finding:
 
 | Result | Meaning | Action |
 |---|---|---|
-| N_adr matches | Normal. | Proceed on the scanned sections. |
+| N_adr matches | Normal. | Proceed after complete bounded reads of the selected sections. |
 | Some ADRs match, some do not | Those ADRs are missing sections. | Record each as a **structural gap** in the Phase 7 report — a missing `## GDD Requirements Addressed` is itself a traceability finding. |
-| **0 matches, N_adr > 0** | **Malformed ADRs**, not "no architecture". | "[N_adr] ADRs found, none carries a scannable section — run `$studio-architecture-decision retrofit [file]` on each." Do **not** report zero coverage; that would read as a design failure when it is a format failure. |
+| **0 matches, N_adr > 0** | **Malformed ADRs**, not "no architecture". | Retain all ADRs in scope and read unstructured content in full bounded chunks to assess the claims. Report the structural gap: "[N_adr] ADRs found, none carries a scannable section — run `$studio-architecture-decision retrofit [file]` on each." If claims still cannot be assessed, name those checks `NOT ASSESSED`. Do **not** report zero coverage as if no architecture exists. |
 
-Escalate to a full read of one ADR only when judging a conflict needs its
+Escalate to a full bounded read of one ADR when judging a conflict needs its
 reasoning (Phase 4) — that is a per-ADR decision, not a blanket load.
 
 - `docs/architecture/architecture.md` if it exists
@@ -140,7 +158,13 @@ reasoning (Phase 4) — that is a per-ADR decision, not a blanket load.
 ### Project Standards
 - `project.yaml` — `naming.*` and `performance.*`; plus `.claude/docs/technical-preferences.md` for those keys when absent and for forbidden patterns / allowed libraries
 
-Report a count: "Loaded [N] GDDs, [M] ADRs, engine: [name + version]."
+Report counts: "Inventoried [N] GDDs, [M] ADRs; required ranges fully read:
+[GDD count], [ADR count]; engine: [name + version]." Final reports include
+coverage and exact unreviewed ranges/reasons. Unread required ranges, unfinished
+fragments, or unresolved truncation make their checks `NOT ASSESSED` and prevent
+approval; known failures remain visible and outrank unknown coverage. Agent
+briefs carry paths and bounded scopes with the protocol's compact return contract,
+not pasted document sets.
 
 **Also read `docs/consistency-failures.md`** if it exists. Extract entries with
 Domain matching the systems under review (Architecture, Engine, or any GDD domain

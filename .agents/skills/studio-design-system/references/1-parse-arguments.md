@@ -85,7 +85,11 @@ filename (e.g., "combat system" becomes `combat-system`).
 `system_overrides` row for this system if the block lists one, else the project
 value.
 
-The resolved tier determines which GDD sections are **required** (applied in §4).
+The resolved tier determines which GDD sections are **required** (applied in §4). The executable
+schema is `.claude/scripts/gdd-structure.py`; read
+`.claude/docs/gdd-structure.md` and use its tier/category/condition flags to
+check the completed document. The explanations below describe those rules;
+do not create another checker-specific section list.
 **`## Summary` is required at every tier and is not one of the 8** — §5-pre
 authors it unconditionally (*"This runs at every tier"*), but it appeared in none
 of the per-tier lists below, and these lists are what other skills and gates

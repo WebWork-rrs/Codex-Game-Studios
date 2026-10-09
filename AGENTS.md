@@ -68,6 +68,16 @@ is unavailable, perform required roles sequentially and report that limit.
 Team/task/message labels map to available collaboration tools and a written
 ledger. Apply relevant upstream escalation and error-recovery protocols.
 
+## Document reading
+
+Use `.claude/docs/bounded-document-reading.md` for design, architecture,
+registry, and review inputs. Inventory headings/ranges with
+`python3 .claude/scripts/read-markdown.py index <path>` and consume content
+with its bounded `read` command and returned line/column cursors. A request to
+read a full document means complete coverage through successive chunks.
+Summaries, grep previews, or truncated output do not complete a review.
+Record unreviewed ranges as NOT ASSESSED; preserve the user's model settings.
+
 ## Standards and evidence
 
 Before game implementation, read `.claude/docs/coding-standards.md`. Load

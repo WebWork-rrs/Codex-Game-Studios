@@ -65,19 +65,26 @@ starting Phase 3. Collect both results before writing the combined report.
 Spawn both as `game-designer` sub-agents (`subagent_type: game-designer`) — GDD
 consistency and design-theory review is its domain.
 
-**When spawning the Phase 2 and Phase 3 agents, always pass:**
-- The loaded GDD **content** each phase needs — **not file paths**. Paste the
-  sections; the sub-agent has its own context and cannot re-read Phase 1's
-  results, so a path forces a full re-read (and contradicts the "do not re-read"
-  rule below). Pass only the phase's slice: Phase 2 (consistency) needs each GDD's
-  Dependencies, Detailed Design/Rules, Formulas, Tuning Knobs and Acceptance
-  Criteria; Phase 3 (design theory) needs Player Fantasy, progression/reward
-  structure and the game pillars.
-- The full entity registry contents (`design/registry/entities.yaml`) if loaded in Phase 1b (paste the registry text, not just a file path)
-- The specific checklist items assigned to that agent's phase (Phase 2 gets 2a–2f; Phase 3 gets 3a–3g)
-- The engine name and version — `engine.name` and `engine.version` from `project.yaml`, resolving each field independently (if its key is absent or empty, use `.claude/docs/technical-preferences.md`) — plus `docs/engine-reference/[engine]/VERSION.md`
+**When spawning the Phase 2 and Phase 3 agents, pass a bounded-reading brief:**
+- Objective, assigned checklist items (Phase 2: 2a–2f; Phase 3: 3a–3g), and
+  relevant configuration facts.
+- Each GDD's path, stable inventory hash, and exact named sections/ranges.
+  Phase 2 needs Dependencies, Detailed Design/Rules, Formulas, Tuning Knobs,
+  and Acceptance Criteria; Phase 3 needs Player Fantasy, progression/reward
+  structure, and game pillars. Expand cross-references when a finding needs them.
+- The entity registry path and relevant matched entry ranges, with compact
+  findings already discovered; the agent reads complete needed entries.
+- Engine name/version resolved independently from project configuration, plus
+  the engine reference path and required verification sections.
+- `.claude/docs/bounded-document-reading.md` and its return contract: covered and
+  unreviewed ranges, prioritized line-cited findings, disagreements, and status.
 
-Do not rely on the subagent to re-read these files — it has its own context window and cannot access Phase 1 results unless they are explicitly passed in the `Agent` prompt.
+The subagent has its own context but can read shared source files. It reads its
+assigned ranges with the bounded helper and verifies the supplied hash. Do not
+paste whole GDDs or the full registry into every prompt. The parent collects
+coverage evidence from both agents before synthesis; a summary alone does not
+establish either specialist check. Queue calls within the available concurrency
+limit, and name unavailable specialist checks as NOT ASSESSED.
 
 ---
 

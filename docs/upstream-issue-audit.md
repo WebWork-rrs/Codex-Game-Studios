@@ -11,7 +11,8 @@ The audited Codex repository revision is `f60ae52`.
 
 An open upstream issue is not proof that our repository still has its bug:
 several fixes are present in 1.1.3 while their reports and PRs remain open.
-This audit changes documentation only; it does not implement the fixes below.
+This audit records the findings at the audited revision. The three recommended
+changes have since been implemented; see [implementation and evidence](codex-fixes.md).
 
 ## Recommended work, in order
 

@@ -55,11 +55,11 @@ reads. Only proceed to L1 for the `CHANGED` set plus the GDDs named on the
 
 ### Phase 1b — Registry Pre-Load (fast baseline)
 
-Before full-reading any GDD, check for the entity registry:
-
-```
-Read path="design/registry/entities.yaml"
-```
+Before full-reading any GDD, check for the entity registry. Use bounded reads
+under `.claude/docs/bounded-document-reading.md`; the helper can inventory the
+line count and read text even when there are no Markdown headings. Locate
+relevant entries with targeted searches and read complete entries as needed,
+recording incomplete or truncated match/read sets.
 
 If the registry exists and has entries, use it as a **pre-built conflict
 baseline**: known entities, items, formulas, and constants with their
@@ -73,7 +73,15 @@ Run `$studio-consistency-check` after this review to populate the registry."
 
 ### Phase 1c — L1/L2: Section Load
 
-Read whole (small, and every part is used):
+Read `.claude/docs/bounded-document-reading.md` and apply it to every load below.
+Inventory each in-scope file with
+`python3 .claude/scripts/read-markdown.py index "[path]" --offset 0 --limit 30`,
+following all `next_offset` pages. Read chosen ranges successively with
+`python3 .claude/scripts/read-markdown.py read "[path]" --start [line] --max-lines 120 --max-chars 8000`,
+following the actual line/column cursor. Record required/read/unreviewed ranges.
+
+Read whole in bounded chunks (every part is used; verify size rather than
+assuming these files are small):
 
 1. `design/gdd/game-concept.md` — game vision, core loop, MVP definition (or
    `design/game-brief.md`, the one-page brief that replaces it at `rigor: minimal` —
@@ -82,11 +90,11 @@ Read whole (small, and every part is used):
 3. `design/gdd/systems-index.md` — authoritative system list, layers, dependencies, status
 
 Then, for **every in-scope system GDD**, load the sections this review actually
-consumes — **not the whole file**:
-
-```
-Grep pattern="^## (Dependencies|Detailed Rules|Detailed Design|Formulas|Tuning Knobs|Acceptance Criteria|Player Fantasy)" glob="design/gdd/*.md" output_mode="content" -A 40
-```
+consumes: Dependencies, Detailed Rules / Detailed Design, Formulas, Tuning Knobs,
+Acceptance Criteria, and Player Fantasy. Select their complete ranges from the
+heading inventory, including nested subsections, then read every chunk in those
+ranges. A fixed `-A 40` grep is a preview, not a section load: text after line 40
+must not escape review. Summary scans in Phase 1a are discovery only.
 
 That list is not a guess — it is exactly the union the Parallel Execution
 contract below already enumerates: Phase 2 needs Dependencies, Detailed
@@ -100,13 +108,24 @@ checklist item ever read.
 Accept **either** `## Detailed Rules` or `## Detailed Design`; the design standard
 and the GDD template disagree on the name and they denote the same section.
 
-**Escalate to a full read of one GDD** when a scanned section cross-references
+**Escalate to a full bounded read of one GDD** when a selected section cross-references
 material outside itself, or when a GDD matched **zero** sections — that GDD
 predates the template, and a zero-match there means "unstructured", not "empty".
 Never let a zero-match silently drop a system: the scan narrows the *read*, it
-never shrinks the *review set*.
+never shrinks the *review set*. For an unstructured file, review lines 1 through
+the total line count successively, including oversized-line fragments. If any
+required range cannot be read, retain the system and mark the affected checks
+`NOT ASSESSED` with exact gaps; do not report it as fully loaded or approved.
 
-Report: "Loaded [N] system GDDs covering [M] systems. Pillars: [list]. Anti-pillars: [list]."
+For parallel reviews, pass source paths, section scopes, configuration facts,
+and compact findings under the protocol's brief/return contract. Specialists
+read their assigned ranges themselves and return coverage plus line-cited
+findings. Passing summaries does not satisfy their section coverage.
+
+Report: "Inventoried [N] system GDDs covering [M] systems; required ranges fully
+read: [count]. Pillars: [list]. Anti-pillars: [list]." Include the coverage ledger
+and `NOT ASSESSED` gaps in the final report; findings from partial reads remain
+visible and known failures outrank unknown coverage.
 
 If fewer than 2 system GDDs exist (count the files present; an empty one is handled under NOT ASSESSED in Phase 5, not here), stop:
 > "Cross-GDD review requires at least 2 system GDDs. Write more GDDs first,

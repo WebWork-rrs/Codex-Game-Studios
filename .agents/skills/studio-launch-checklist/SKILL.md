@@ -37,6 +37,11 @@ upstream documents. Work from the repository root.
   settings from `project.yaml` and explicitly reads the matching version
   reference. `@file` imports, Claude settings, status lines, and permissions
   do not configure Codex. Preserve `AGENTS.md` during engine setup.
+- For design/architecture/registry/review inputs, apply
+  `.claude/docs/bounded-document-reading.md`: inventory ranges and read with
+  `.claude/scripts/read-markdown.py` using returned line/column cursors.
+  Upstream "read in full" means complete coverage through bounded chunks,
+  never an unbounded tool response. Record gaps as NOT ASSESSED.
 - Edit upstream skill/role sources under `.claude/`, then run
   `python3 tools/codex/studio.py sync` to regenerate Codex copies. Do not edit
   generated files directly. Apply the same rule to framework self-tests.
