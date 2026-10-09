@@ -57,7 +57,8 @@ yaml_block_value() {
     inb && /^[a-zA-Z_]/ { inb=0 }
     inb && $0 ~ "^[[:space:]]+"k":" {
       sub("^[[:space:]]*"k":[[:space:]]*", "")
-      gsub(/^"|"$/, "")
+      # Unquote an entire scalar, not the leading executable of a command.
+      if ($0 ~ /^"[^"]*"$/) { sub(/^"/, ""); sub(/"$/, "") }
       print; exit
     }
   ' project.yaml 2>/dev/null
@@ -132,24 +133,31 @@ fi
 PROBE=""
 case "$ENGINE_LC" in
   godot)
-    # The executable named in commands.test (quoted, or its first word), else
-    # engine.path, else `godot` on PATH -- the same fallback order dev-story
-    # and smoke-check use. commands.* now carries the full editor path once
-    # /setup-engine has run, so a bare `command -v godot` alone reported "no
-    # Godot binary found on PATH" even on a correctly configured project.
-    GEXE=""
-    for GCAND in \
-      "$(yaml_block_value commands test | grep -oE '"[^"]*"' | head -1 | tr -d '"')" \
-      "$(yaml_block_value commands test | awk '{print $1}')" \
-      "$(yaml_block_value engine path)" \
-      "godot"; do
+    # Only a direct Godot executable in commands.test takes precedence.
+    # Python/shell test wrappers must resolve the engine via engine.path/PATH.
+    GTEST="$(yaml_block_value commands test)"
+    case "$GTEST" in
+      \"*) GCMD="$(printf '%s' "$GTEST" | sed -n 's/^"\([^"]*\)".*/\1/p')" ;;
+      *)   GCMD="$(printf '%s' "$GTEST" | awk '{print $1}')" ;;
+    esac
+    GNAME="$(printf '%s' "${GCMD##*/}" | tr 'A-Z' 'a-z')"
+    case "$GNAME" in godot*) ;; *) GCMD="" ;; esac
+    for GCAND in "$GCMD" "$(yaml_block_value engine path)" "godot"; do
       [ -n "$GCAND" ] || continue
       if command -v "$GCAND" >/dev/null 2>&1 || [ -x "$GCAND" ]; then
-        GEXE="$GCAND"
-        break
+        # Check the exit status before extracting a line: a failed probe is
+        # not evidence, even if it printed a plausible version first.
+        if GOUTPUT="$("$GCAND" --version 2>/dev/null)"; then
+          GVERSION="$(printf '%s' "$GOUTPUT" | head -1)"
+          # Godot --version prints a numeric release followed by dot-separated
+          # build identifiers, e.g. 4.7.2.stable.official.<hash>.
+          if printf '%s\n' "$GVERSION" | grep -qE '^[0-9]+\.[0-9]+(\.[0-9]+)?\.[[:alnum:]_]+(\.[[:alnum:]_-]+)+$'; then
+            PROBE="$GVERSION"
+            break
+          fi
+        fi
       fi
     done
-    [ -n "$GEXE" ] && PROBE="$("$GEXE" --version 2>/dev/null | head -1)"
     ;;
   unity)
     # The editor named in commands.test (/setup-engine writes its full, quoted
@@ -211,7 +219,7 @@ if [ -z "$PROBE" ]; then
   if [ "$ENGINE_LC" = "unity" ]; then
     skipped "declared version vs installed binary — no Unity editor at the path in commands.test or in the Hub folder for engine.version. A probe that could not run has not established absence."
   elif [ "$ENGINE_LC" = "godot" ]; then
-    skipped "declared version vs installed binary — no Godot executable found (commands.test, engine.path, PATH). A probe that could not run has not established absence."
+    skipped "declared version vs installed binary — no successful Godot version probe (commands.test, engine.path, PATH) — candidates unavailable, failed or returned non-Godot output."
   elif [ "$ENGINE_LC" = "unreal" ]; then
     skipped "declared version vs installed engine — no readable Engine/Build/Build.version under engine.path, the editor in commands.test, the launcher folder for the .uproject's EngineAssociation, or UnrealEditor-Cmd on PATH. A probe that could not run has not established absence."
   else
