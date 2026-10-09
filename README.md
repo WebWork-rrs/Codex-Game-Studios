@@ -1,3 +1,8 @@
+> **Codex adaptation:** This checkout includes 74 studio skills, 49 roles,
+> `AGENTS.md`, and native lifecycle validation adapters. See [CODEX.md](CODEX.md).
+> In a new Codex session, use `$studio-start` or ask Codex to read `AGENTS.md`
+> and help you start a game. The original Claude documentation follows.
+
 <p align="center">
   <h1 align="center">Claude Code Game Studios</h1>
   <p align="center">

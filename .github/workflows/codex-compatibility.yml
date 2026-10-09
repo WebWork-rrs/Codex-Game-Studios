@@ -1,0 +1,20 @@
+name: Codex compatibility
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Adapter regression tests
+        run: python3 -m unittest discover -s tools/codex/tests -v
+      - name: Generated files are synchronized
+        run: python3 tools/codex/studio.py sync --check
+      - name: Template data is valid
+        run: python3 tools/codex/studio.py validate
