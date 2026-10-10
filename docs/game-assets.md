@@ -5,6 +5,11 @@ coherent game world, real artwork, appropriate animation, and gameplay
 feedback. It works with minimal rigor and a short brief. Existing requests
 for placeholders, silence, or a limited scope remain valid.
 
+Follow the [prototype workflow](prototype-workflow.md) for a chosen gameplay
+mockup, mechanics gym, asset preview, explicit handoffs, uncoached first use,
+and an exported-build check. Optional [Godot editor MCP](godot-editor-mcp.md)
+and the conditional [3D asset pipeline](3d-assets.md) have separate pilot guides.
+
 ```text
 Read AGENTS.md and use studio-playable-prototype to build my small coin game.
 Use minimal rigor and guided automation. Give it a coherent visual style,

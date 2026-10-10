@@ -1,0 +1,21 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"source\": \"viewport_2d\", \"width\": 2, \"height\": 2, \"original_width\": 2, \"original_height\": 2, \"format\": \"png\"}",
+      "annotations": null,
+      "meta": null
+    },
+    {
+      "type": "image",
+      "mime_type": "image/png",
+      "annotations": null,
+      "meta": null,
+      "saved_image": "11-capture-1.png"
+    }
+  ],
+  "structured_content": null,
+  "is_error": false,
+  "result_type": "complete"
+}

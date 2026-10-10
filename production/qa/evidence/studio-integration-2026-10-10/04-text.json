@@ -1,0 +1,20 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"old_value\":\"\",\"path\":\"/Pilot/MCPProof\",\"property\":\"text\",\"undoable\":true,\"value\":\"MCP edit persisted\"}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "old_value": "",
+    "path": "/Pilot/MCPProof",
+    "property": "text",
+    "undoable": true,
+    "value": "MCP edit persisted"
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

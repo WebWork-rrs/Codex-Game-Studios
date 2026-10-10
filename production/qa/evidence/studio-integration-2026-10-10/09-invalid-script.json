@@ -1,0 +1,107 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"cleanup\":{\"rm\":[\"res://src/diagnostic_probe.gd\",\"res://src/diagnostic_probe.gd.uid\"]},\"committed\":true,\"diagnostics\":[{\"details\":{\"code\":\"Parse Error: Expected closing \\\")\\\" after function parameters.\",\"error_type\":2,\"error_type_name\":\"script\",\"frames\":[{\"function\":\"<anonymous lambda>\",\"line\":375,\"path\":\"res://addons/godot_ai/handlers/script_handler.gd\"},{\"function\":\"capture_this_file\",\"line\":15,\"path\":\"res://addons/godot_ai/utils/diagnostics_capture.gd\"},{\"function\":\"_capture_gdscript_load_diagnostics\",\"line\":370,\"path\":\"res://addons/godot_ai/handlers/script_handler.gd\"},{\"function\":\"_attach_gdscript_diagnostics\",\"line\":270,\"path\":\"res://addons/godot_ai/handlers/script_handler.gd\"},{\"function\":\"create_script\",\"line\":80,\"path\":\"res://addons/godot_ai/handlers/script_handler.gd\"},{\"function\":\"_call_handler\",\"line\":353,\"path\":\"res://addons/godot_ai/dispatcher.gd\"},{\"function\":\"_dispatch\",\"line\":294,\"path\":\"res://addons/godot_ai/dispatcher.gd\"},{\"function\":\"tick\",\"line\":263,\"path\":\"res://addons/godot_ai/dispatcher.gd\"},{\"function\":\"_process\",\"line\":152,\"path\":\"res://addons/godot_ai/connection.gd\"}],\"message\":\"Parse Error: Expected closing \\\")\\\" after function parameters.\",\"rationale\":\"\",\"resolved\":{\"function\":\"<anonymous lambda>\",\"line\":375,\"path\":\"res://addons/godot_ai/handlers/script_handler.gd\"},\"source\":{\"function\":\"GDScript::reload\",\"line\":2,\"path\":\"res://src/diagnostic_probe.gd\"}},\"function\":\"GDScript::reload\",\"level\":\"error\",\"line\":2,\"path\":\"res://src/diagnostic_probe.gd\",\"source\":\"editor\",\"text\":\"Parse Error: Expected closing \\\")\\\" after function parameters.\"}],\"diagnostics_detail\":\"log_capture\",\"diagnostics_scope\":\"this_file\",\"diagnostics_status\":\"checked\",\"import_pending\":false,\"import_settle\":\"settled\",\"import_settled\":true,\"language\":\"gdscript\",\"path\":\"res://src/diagnostic_probe.gd\",\"reason\":\"File system operations cannot be undone via editor undo\",\"size\":26,\"undoable\":false}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "cleanup": {
+      "rm": [
+        "res://src/diagnostic_probe.gd",
+        "res://src/diagnostic_probe.gd.uid"
+      ]
+    },
+    "committed": true,
+    "diagnostics": [
+      {
+        "details": {
+          "code": "Parse Error: Expected closing \")\" after function parameters.",
+          "error_type": 2,
+          "error_type_name": "script",
+          "frames": [
+            {
+              "function": "<anonymous lambda>",
+              "line": 375,
+              "path": "res://addons/godot_ai/handlers/script_handler.gd"
+            },
+            {
+              "function": "capture_this_file",
+              "line": 15,
+              "path": "res://addons/godot_ai/utils/diagnostics_capture.gd"
+            },
+            {
+              "function": "_capture_gdscript_load_diagnostics",
+              "line": 370,
+              "path": "res://addons/godot_ai/handlers/script_handler.gd"
+            },
+            {
+              "function": "_attach_gdscript_diagnostics",
+              "line": 270,
+              "path": "res://addons/godot_ai/handlers/script_handler.gd"
+            },
+            {
+              "function": "create_script",
+              "line": 80,
+              "path": "res://addons/godot_ai/handlers/script_handler.gd"
+            },
+            {
+              "function": "_call_handler",
+              "line": 353,
+              "path": "res://addons/godot_ai/dispatcher.gd"
+            },
+            {
+              "function": "_dispatch",
+              "line": 294,
+              "path": "res://addons/godot_ai/dispatcher.gd"
+            },
+            {
+              "function": "tick",
+              "line": 263,
+              "path": "res://addons/godot_ai/dispatcher.gd"
+            },
+            {
+              "function": "_process",
+              "line": 152,
+              "path": "res://addons/godot_ai/connection.gd"
+            }
+          ],
+          "message": "Parse Error: Expected closing \")\" after function parameters.",
+          "rationale": "",
+          "resolved": {
+            "function": "<anonymous lambda>",
+            "line": 375,
+            "path": "res://addons/godot_ai/handlers/script_handler.gd"
+          },
+          "source": {
+            "function": "GDScript::reload",
+            "line": 2,
+            "path": "res://src/diagnostic_probe.gd"
+          }
+        },
+        "function": "GDScript::reload",
+        "level": "error",
+        "line": 2,
+        "path": "res://src/diagnostic_probe.gd",
+        "source": "editor",
+        "text": "Parse Error: Expected closing \")\" after function parameters."
+      }
+    ],
+    "diagnostics_detail": "log_capture",
+    "diagnostics_scope": "this_file",
+    "diagnostics_status": "checked",
+    "import_pending": false,
+    "import_settle": "settled",
+    "import_settled": true,
+    "language": "gdscript",
+    "path": "res://src/diagnostic_probe.gd",
+    "reason": "File system operations cannot be undone via editor undo",
+    "size": 26,
+    "undoable": false
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

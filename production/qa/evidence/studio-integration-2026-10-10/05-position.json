@@ -1,0 +1,26 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"old_value\":{\"x\":0.0,\"y\":0.0},\"path\":\"/Pilot/MCPProof\",\"property\":\"position\",\"undoable\":true,\"value\":{\"x\":30.0,\"y\":80.0}}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "old_value": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "path": "/Pilot/MCPProof",
+    "property": "position",
+    "undoable": true,
+    "value": {
+      "x": 30.0,
+      "y": 80.0
+    }
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

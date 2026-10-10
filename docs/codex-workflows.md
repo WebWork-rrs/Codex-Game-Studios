@@ -37,7 +37,7 @@ Invoke a skill using `$studio-NAME` or ask for the workflow in plain language.
 | `$studio-onboard` | Onboarding doc for a new contributor or agent — project state, conventions, priorities relevant to the specified role. |
 | `$studio-patch-notes` | Player-facing patch notes from git history and changelogs. Translates developer language into player communication. |
 | `$studio-perf-profile` | Performance profiling — find bottlenecks, measure against budgets, produce ranked optimization recommendations. |
-| `$studio-playable-prototype` | Build or polish a small playable game with cohesive assets, animation, and gameplay feedback. Use for experiments that should look and feel like a game. |
+| `$studio-playable-prototype` | Use when a small playable game or experiment needs coherent artwork, animation, audio, and gameplay feedback. |
 | `$studio-playtest-report` | Structured playtest report template, or turn existing playtest notes into structured feedback. |
 | `$studio-project-stage-detect` | Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in development?' |
 | `$studio-propagate-design-change` | A GDD changed — scan ADRs and the traceability index for now-stale architectural decisions. Impact report, guides resolution. |

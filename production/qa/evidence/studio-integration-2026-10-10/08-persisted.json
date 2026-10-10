@@ -1,0 +1,35 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"count\":2,\"node_type\":\"Label\",\"path\":\"/Pilot/MCPProof\",\"properties\":[{\"name\":\"position\",\"type\":\"Vector2\",\"value\":{\"x\":30.0,\"y\":80.0}},{\"name\":\"text\",\"type\":\"String\",\"value\":\"MCP edit persisted\"}],\"total_count\":109,\"unknown_fields\":[]}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "count": 2,
+    "node_type": "Label",
+    "path": "/Pilot/MCPProof",
+    "properties": [
+      {
+        "name": "position",
+        "type": "Vector2",
+        "value": {
+          "x": 30.0,
+          "y": 80.0
+        }
+      },
+      {
+        "name": "text",
+        "type": "String",
+        "value": "MCP edit persisted"
+      }
+    ],
+    "total_count": 109,
+    "unknown_fields": []
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

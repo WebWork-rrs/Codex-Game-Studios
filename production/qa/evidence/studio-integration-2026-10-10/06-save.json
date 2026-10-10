@@ -1,0 +1,18 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"path\":\"res://src/pilot.tscn\",\"reason\":\"File save cannot be undone via editor undo\",\"undoable\":false}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "path": "res://src/pilot.tscn",
+    "reason": "File save cannot be undone via editor undo",
+    "undoable": false
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

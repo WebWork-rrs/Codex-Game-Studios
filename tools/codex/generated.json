@@ -125,7 +125,8 @@
     ".agents/skills/studio-onboard/SKILL.md": "8c2a49e1cd2e758fa4a5fc7fa64aa3fa00cea22f5ffd1f9d825c5adf310dd60f",
     ".agents/skills/studio-patch-notes/SKILL.md": "ba69154e15c4da2b1024d1c346bf3ac97e837156433add750fc35995fdd53366",
     ".agents/skills/studio-perf-profile/SKILL.md": "dd67e7f66647287a04c7a9706adb5f758adbb4cfa8966161fd7e2b43047293cd",
-    ".agents/skills/studio-playable-prototype/SKILL.md": "5867e6673ee1783644d738b7e21ed7bbd1839bd25e0022dd6254870828051724",
+    ".agents/skills/studio-playable-prototype/SKILL.md": "b3c80b685618a7922669b1baccbe5f66dfe0e38fa36db659ab6cfeea0674dc56",
+    ".agents/skills/studio-playable-prototype/references/prototype-record.md": "989ace5f849560510849a4bc4d72dee75ea7fe2e6f33b06ed0b5163a85f8703a",
     ".agents/skills/studio-playtest-report/SKILL.md": "96677e8dd231248bd4a1f80753a9851f804e7cbf0380a197d27a7b0d853c53a9",
     ".agents/skills/studio-project-stage-detect/SKILL.md": "94f49e6612d0645d04f9b38beae32d5cae41d007ba66fd0f18c559338a0602f6",
     ".agents/skills/studio-propagate-design-change/SKILL.md": "2a1523d07594a70d56bac6fc48fe1722708d9498b7b787d15b87bb2c9a87f95f",
@@ -276,7 +277,7 @@
     ".codex/agents/writer.toml": "52ff69bd6fad105564ed505735fd3c2fade142a9b3b29a6602694b3c0d23ce60",
     ".codex/config.toml": "69cab70596f74054e4887e79c37aad941ff149a4686a5d05ec39f4d030f23dd7",
     ".codex/hooks.json": "eaadd986c4775357c2fc1ce966bed371c700c778fad5dae95b2de3e26f1dbb31",
-    "docs/codex-workflows.md": "38df506eb9bfae1551b6e24c28a232f446877821520309bdd55d3d6d0f776af7"
+    "docs/codex-workflows.md": "39ed2427cfecfb6ac6f165678b26265f670b1a84e5532b2cae672e34c6b52759"
   },
   "format_version": 1
 }

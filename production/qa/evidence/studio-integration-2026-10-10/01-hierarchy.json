@@ -1,0 +1,39 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"has_more\":false,\"limit\":100,\"nodes\":[{\"children_count\":2,\"name\":\"Pilot\",\"path\":\"/Pilot\",\"type\":\"Node2D\"},{\"children_count\":0,\"name\":\"Backdrop\",\"path\":\"/Pilot/Backdrop\",\"type\":\"Polygon2D\"},{\"children_count\":0,\"name\":\"Title\",\"path\":\"/Pilot/Title\",\"type\":\"Label\"}],\"offset\":0,\"total_count\":3}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "has_more": false,
+    "limit": 100,
+    "nodes": [
+      {
+        "children_count": 2,
+        "name": "Pilot",
+        "path": "/Pilot",
+        "type": "Node2D"
+      },
+      {
+        "children_count": 0,
+        "name": "Backdrop",
+        "path": "/Pilot/Backdrop",
+        "type": "Polygon2D"
+      },
+      {
+        "children_count": 0,
+        "name": "Title",
+        "path": "/Pilot/Title",
+        "type": "Label"
+      }
+    ],
+    "offset": 0,
+    "total_count": 3
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

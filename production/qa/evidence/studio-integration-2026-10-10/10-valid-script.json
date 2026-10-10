@@ -1,0 +1,28 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"committed\":true,\"diagnostics\":[],\"diagnostics_detail\":\"none\",\"diagnostics_scope\":\"this_file\",\"diagnostics_status\":\"checked\",\"import_settle\":\"already_known\",\"import_settled\":true,\"language\":\"gdscript\",\"path\":\"res://src/diagnostic_probe.gd\",\"reason\":\"File system operations cannot be undone via editor undo\",\"reloaded\":true,\"size\":53,\"undoable\":false}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "committed": true,
+    "diagnostics": [],
+    "diagnostics_detail": "none",
+    "diagnostics_scope": "this_file",
+    "diagnostics_status": "checked",
+    "import_settle": "already_known",
+    "import_settled": true,
+    "language": "gdscript",
+    "path": "res://src/diagnostic_probe.gd",
+    "reason": "File system operations cannot be undone via editor undo",
+    "reloaded": true,
+    "size": 53,
+    "undoable": false
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

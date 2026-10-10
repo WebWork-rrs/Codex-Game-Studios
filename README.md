@@ -126,6 +126,10 @@ and audio craft skills. A short brief is enough at minimal rigor. See
 available generators, dependencies, and visual/audio verification. If you
 want a disposable greybox first, say so explicitly.
 
+The [prototype workflow](docs/prototype-workflow.md) starts with a gameplay
+mockup, mechanics gym and asset preview, then checks first use and an exported
+build. It also links the optional Godot editor MCP and conditional 3D pipeline.
+
 ### 5. Continue in another session
 
 Open the same project and ask:

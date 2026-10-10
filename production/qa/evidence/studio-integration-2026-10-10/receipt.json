@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-10",
+  "scope": "isolated editor MCP pilot; no game quality, audio or export assessment",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "godot_ai_version": "4.3.0",
+  "tool_count": 47,
+  "connection": "stdio godot-ai attach; explicit pilot session; SDK test client",
+  "codex_desktop_tool_reload": "NOT ASSESSED; this running chat was not restarted or reconfigured",
+  "read_scene": "PASS",
+  "node_edit_and_reload": "PASS",
+  "invalid_script_diagnostics_and_recovery": "PASS",
+  "game_capture": "PASS",
+  "inactive_2d_viewport_capture": "PASS WITH WARNINGS: 2x2 image; not usable scene evidence",
+  "shutdown": "PASS: editor PID 50831 and backend PID 50983 exited; plugin unloaded",
+  "image_sha256": "94fd0efc0c0a344ab1d52bf4debe1c4777771843d3985b565f8cb1ca88e2bb50",
+  "telemetry": "disabled by environment and attach flag",
+  "external_asset_spending": 0,
+  "client_config_changes": "none; root template has no live editor endpoint"
+}

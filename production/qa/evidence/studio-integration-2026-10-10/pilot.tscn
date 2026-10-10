@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cqi63pkpor78k"]
+
+[node name="Pilot" type="Node2D" unique_id=50618022]
+
+[node name="Backdrop" type="Polygon2D" parent="." unique_id=1773706822]
+color = Color(0.76, 0.48, 0.3, 1)
+polygon = PackedVector2Array(0, 260, 200, 220, 420, 280, 640, 210, 640, 360, 0, 360)
+
+[node name="Title" type="Label" parent="." unique_id=1792200397]
+offset_left = 30.0
+offset_top = 30.0
+text = "Studio editor bridge pilot"
+
+[node name="MCPProof" type="Label" parent="." unique_id=1112731850]
+offset_left = 30.0
+offset_top = 80.0
+offset_right = 175.0
+offset_bottom = 103.0
+text = "MCP edit persisted"

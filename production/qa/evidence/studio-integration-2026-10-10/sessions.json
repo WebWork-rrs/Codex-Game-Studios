@@ -1,0 +1,36 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"sessions\":[{\"session_id\":\"project@9181ffb9a211a6d5\",\"name\":\"project\",\"godot_version\":\"4.7.2-stable (official)\",\"project_path\":\"/Volumes/AppsSSD/game-dev/.codex-test-tmp/godot-ai-pilot/project/\",\"plugin_version\":\"4.3.0\",\"server_version\":\"4.3.0\",\"protocol_version\":2,\"current_scene\":\"res://src/pilot.tscn\",\"play_state\":\"stopped\",\"readiness\":\"ready\",\"editor_pid\":50831,\"server_launch_mode\":\"uvx\",\"connected_at\":\"2026-10-10T08:08:51.540855+00:00\",\"last_seen\":\"2026-10-10T08:13:05.744384+00:00\",\"is_active\":true}],\"count\":1,\"exclude_domains\":[]}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "sessions": [
+      {
+        "session_id": "project@9181ffb9a211a6d5",
+        "name": "project",
+        "godot_version": "4.7.2-stable (official)",
+        "project_path": "/Volumes/AppsSSD/game-dev/.codex-test-tmp/godot-ai-pilot/project/",
+        "plugin_version": "4.3.0",
+        "server_version": "4.3.0",
+        "protocol_version": 2,
+        "current_scene": "res://src/pilot.tscn",
+        "play_state": "stopped",
+        "readiness": "ready",
+        "editor_pid": 50831,
+        "server_launch_mode": "uvx",
+        "connected_at": "2026-10-10T08:08:51.540855+00:00",
+        "last_seen": "2026-10-10T08:13:05.744384+00:00",
+        "is_active": true
+      }
+    ],
+    "count": 1,
+    "exclude_domains": []
+  },
+  "is_error": false,
+  "result_type": "complete"
+}

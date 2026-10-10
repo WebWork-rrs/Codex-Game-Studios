@@ -1,0 +1,17 @@
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"message\":\"Editor quit initiated\",\"status\":\"quitting\"}",
+      "annotations": null,
+      "meta": null
+    }
+  ],
+  "structured_content": {
+    "message": "Editor quit initiated",
+    "status": "quitting"
+  },
+  "is_error": false,
+  "result_type": "complete"
+}
